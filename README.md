@@ -7,3 +7,4 @@ Read the report_soarcchar.pdf for an overview of the project and code design.
 
 Read the usage guidance usageguidance_soarcchar.pdf before running the code from soarc_master.m. The usage guidance provides a brief description of code input/output and usage.
 
+rhijo - uob - June 2019
