@@ -1,0 +1,8 @@
+lat_min	-90
+lat_max	-30
+lon_min	-180
+lon_max	0
+yr_min	2017
+yr_max	2017
+month_min	01
+month_max	01
