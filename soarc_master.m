@@ -14,13 +14,13 @@
 [fronts_profiles]=soarc_processprofs(profile_index);
 
 %% Run soarc_fzlogical
-[fronts_logical] = soarc_fzlogical(fronts_profiles);
+[fronts_logical] = soarc_zonelogical(fronts_profiles);
 
 %% Run soarc_fzclass
-[fronts_char] = soarc_fzchar(fronts_logical,fronts_profiles);
+[fronts_char] = soarc_zonechar(fronts_logical,fronts_profiles);
 
 %% Run soarc_ar_outfile.m
-soarc_ar_outfile(fronts_char);
+soarc_outfile(fronts_char);
 
 %% Run soarc_plotzones.m
 % plot characterised float profiles
