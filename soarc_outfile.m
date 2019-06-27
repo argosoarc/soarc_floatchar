@@ -25,7 +25,7 @@ auth = 'Rhiannon Jones, UoB';
 format = 'Format: file/latitude/longitude/date(yyyyMMddHHmmss)/zone';
 
 % write file header
-fprintf(fid, '%s\n %s\n %s\n %s\n %s\n',str,dt,cdsrc,vno,format);
+fprintf(fid, '%s\n %s\n %s\n %s\n %s\n %s\n',str,dt,cdsrc,vno,auth,format);
 
 % write STZ to index file
 if isfield(fronts_char,'stz')
@@ -101,7 +101,7 @@ end
 % write no char to index file
 if isfield(fronts_char,'noclass')
     for i = 1 : numel(fronts_char.noclass)
-        fronts_nochar{i} = struct2cell(fronts_char.nochar(i));
+        fronts_nochar{i} = struct2cell(fronts_char.noclass(i));
         if ~isempty(fronts_nochar{i}(1))
         fprintf(fid,'%s,%3.2f,%3.2f,%s, %s \n',fronts_nochar{i}{1:4},'NOCHAR');
         end
