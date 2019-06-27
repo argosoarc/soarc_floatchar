@@ -18,7 +18,7 @@ fid = fopen(f);
 fullfile_root = textscan(fid,'%s %*d %*f %*f', 'Delimiter',',');
 fclose(fid);
 
-prof_index = fullfile_root{1}(1:10); %Chosen a small selection for quick testing
+prof_index = fullfile_root{1}; %Chosen a small selection for quick testing
 
 % Initialise arrays
 LAT = [];
@@ -33,14 +33,13 @@ PSAL = [];
 
         % Scan folders for file list, and display
         file_list{k} = fullfile('dac',prof_index{k});
-        %disp(file_list);
-
+    
         % Test files are Argo Netcdf
-           files_correct = false;
+               files_correct = false;
 
-            nc = (regexp(file_list,'.nc'));
+                nc = (regexp(file_list,'.nc'));
 
-            find(~cellfun('isempty', nc));
+                find(~cellfun('isempty', nc));
 
         if (nc{k}>0)
            files_correct = true;
@@ -121,7 +120,9 @@ PSAL = [];
     end
 
 
-    
+isbadpqc = cellfun(@(x) any(x==1),isbadpqc,'UniformOutput',false);
+isbadtqc = cellfun(@(x) any(x==1),isbadtqc,'UniformOutput',false);
+isbadsqc = cellfun(@(x) any(x==1),isbadsqc,'UniformOutput',false);
 % Combine all returned bad qc flags (P,T,S) and remove flagged profiles
 allbadqc = cellfun(@(x,y,z) any(x==1 | y==1 | z==1),isbadpqc,isbadtqc,isbadsqc,'UniformOutput',false);
 for i = length(allbadqc):-1:1

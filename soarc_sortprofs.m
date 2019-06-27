@@ -22,34 +22,41 @@ dum_expID = EXPID;
 
 % read in index file ar_index_global_prof.txt
 fid=fopen('ar_index_global_prof.txt');
-[P]=textscan(fid,'%s %f %f %f %*s %*f %*s %*f','HeaderLines',9,'Delimiter',',','CollectOutput',true);
+[P]=textscan(fid,'%s %{yyyyMMddHHmmss}D %f %f %*s %*f %*s %*f','HeaderLines',9,'Delimiter',',','CollectOutput',true);
 fclose(fid);
-
+%% Read in argo profile index file and sort for desired profiles
 %Search and remove profiles greater than -30 degrees latitude
 profID = P{1};
-d = P{2};%(:,1);
+dt = P{2};
+d = P{3};%(:,1);
 
 idx = any(d(:,2) > -30,2);
 d(idx,:)=[];
 profID(idx,:)=[];
+dt(idx,:)= [];
 
 %Search and remove any NaN from lat/lon column
 profID(any(isnan(d),2),:) = [];
+dt(any(isnan(d),2),:) = [];
 d(any(isnan(d),2),:) = [];
+profID(any(isnat(dt)),:) = [];
+d(any(isnat(dt)),:) = [];
+dt(any(isnat(dt)),:) = [];
 
 %Return cell array for all columns to write file
 dln_cell = num2cell(d);
-prof_dln = [profID dln_cell];
+dt_cell = cellstr(char(dt));
+prof_dln = [profID dt_cell dln_cell];
 
 %Write new index file - all profile indexes for Southern Ocean floats
 so_filename = ['ar_index_soarc_',datestr(now,'ddmmyy'),'.txt'];
 fileID = fopen(so_filename,'w');
  
-formatSpec = '%s, %d, %f, %f \n';
+formatSpec = '%s, %{yyyyMMddHHmmss}D, %f, %f \n';
  
 [nrows, ncols ] = size(prof_dln);
-for row = 1:nrows
-fprintf(fileID, formatSpec, prof_dln{row,:});
+for i = 1 : length(prof_dln)
+fprintf(fileID, '%s, %s, %f, %f \n', prof_dln{i,:});
 end
 fclose(fileID);
 

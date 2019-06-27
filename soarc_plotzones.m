@@ -12,9 +12,8 @@ function[] = soarc_plotzones(fronts_char)
 
 %% Plot profiles
 % read in driver file for lat / lon / time limits
-path = 'argo_work';
-paramfile = 'soarc_param_driver_3060S_00360E_012017.txt';
- fid = fopen(fullfile(path,paramfile));
+paramfile = 'soarc_param_driver_userexample.txt';
+ fid = fopen(fullfile(paramfile));
     [d] = textscan(fid,'%s %f','Delimiter','\t','CollectOutput',true);
     fclose(fid);
 
@@ -39,10 +38,10 @@ figure('units','normalized','outerposition',[0 0 1 1]);
 %set projection (using m_map toolbox)
 
 % Lamber Conformal Conic - good for longitude sections
-%m_proj('Lambert Conformal Conic','long',[-120 -60],'lat',[lat_min-5 lat_max+5]);
+m_proj('Albers Equal-Area Conic','long',[-180 0],'lat',[lat_min lat_max]);
 
 % Polar-centric Stereographic - good for full longitudinal range
-m_proj('Stereographic','lat',-90,'long',0,'radius',65);
+%m_proj('Stereographic','lat',-90,'long',0,'radius',65);
 
 % set colour-blind friendly colormap
 map = brewermap(12,'paired');
@@ -71,16 +70,6 @@ n.MarkerFaceColor = map(1,:);
 n.MarkerEdgeColor = map(1,:);
 n.LineStyle = 'none';
 
-% plot STF
-if isfield(fronts_char,'stf')
-    p = m_plot([fronts_char.stf(:).lon],[fronts_char.stf(:).lat],'DisplayName','stf');%
-end
-p.MarkerSize = 6;
-p.Marker = 'o';
-p.MarkerFaceColor = map(12,:);
-p.MarkerEdgeColor = map(12,:);
-p.LineStyle = 'none';
-
 hold on
 
 % plot SAZ
@@ -93,16 +82,7 @@ q.MarkerFaceColor = map(2,:);
 q.MarkerEdgeColor = map(2,:);
 q.LineStyle = 'none';
 
-% plot SAF
-if isfield(fronts_char,'saf')
-    r = m_plot([fronts_char.saf(:).lon],[fronts_char.saf(:).lat],'DisplayName','saf');
-end
-r.MarkerSize = 7;
-r.Marker = '+';
-r.MarkerFaceColor = map(11,:);
-r.MarkerEdgeColor = map(11,:);
-r.LineStyle = 'none';
-
+% plot pz
 if isfield(fronts_char,'pz')
     s = m_plot([fronts_char.pz(:).lon],[fronts_char.pz(:).lat],'DisplayName','pz');
 end
@@ -112,16 +92,7 @@ s.MarkerFaceColor = map(3,:);
 s.MarkerEdgeColor = map(4,:);
 s.LineStyle = 'none';
 
-if isfield(fronts_char,'pf')
-    t = m_plot([fronts_char.pf(:).lon],[fronts_char.pf(:).lat],'DisplayName','pf');
-end
-t.MarkerSize = 7;
-t.Marker = '>';
-t.MarkerFaceColor = map(10,:);
-t.MarkerEdgeColor = map(10,:);
-t.LineStyle = 'none';
-
-
+% plot az
 if isfield(fronts_char,'az')
     u = m_plot([fronts_char.az(:).lon],[fronts_char.az(:).lat],'DisplayName','az');
 end
@@ -131,15 +102,7 @@ u.MarkerFaceColor = map(4,:);
 u.MarkerEdgeColor = map(5,:);
 u.LineStyle = 'none';
 
-if isfield(fronts_char,'saccf')
-    v = m_plot([fronts_char.saccf(:).lon],[fronts_char.saccf(:).lat],'DisplayName','saccf');
-end
-v.MarkerSize = 7;
-v.Marker = 'p';
-v.MarkerFaceColor = map(9,:);
-v.MarkerEdgeColor = map(9,:);
-v.LineStyle = 'none';
-
+% plot sz
 if isfield(fronts_char,'sz')
     w = m_plot([fronts_char.sz(:).lon],[fronts_char.sz(:).lat],'DisplayName','sz');
 end
@@ -149,15 +112,7 @@ w.MarkerFaceColor = map(6,:);
 w.MarkerEdgeColor = map(6,:);
 w.LineStyle = 'none';
 
-if isfield(fronts_char,'sbdy')
-    x = m_plot([fronts_char.sbdy(:).lon],[fronts_char.sbdy(:).lat],'DisplayName','sbdy');
-end
-x.MarkerSize = 7;
-x.Marker = '^';
-x.MarkerFaceColor = map(11,:);
-x.MarkerEdgeColor = map(3,:);
-x.LineStyle = 'none';
-
+% plot spr
 if isfield(fronts_char,'spr')
    x1 = m_plot([fronts_char.spr(:).lon],[fronts_char.spr(:).lat],'DisplayName','spr');
 end
@@ -167,7 +122,7 @@ x1.MarkerFaceColor = map(7,:);
 x1.MarkerEdgeColor = map(8,:);
 x1.LineStyle = 'none';
 
-
+% plot uncharacterised profiles
 if isfield(fronts_char,'unclass')
    y = m_plot([fronts_char.unclass(:).lon],[fronts_char.unclass(:).lat]);
 end
@@ -177,6 +132,7 @@ y.MarkerFaceColor = map(7,:);
 y.MarkerEdgeColor = map(1,:);
 y.LineStyle = 'none';
 
+% plot no characterisation profiles
 if isfield(fronts_char,'noclass')
    z = m_plot([fronts_char.noclass(:).lon],[fronts_char.noclass(:).lat],'DisplayName','Noclass');
 end
@@ -186,9 +142,11 @@ z.MarkerFaceColor = map(7,:);
 z.MarkerEdgeColor = map(7,:);
 z.LineStyle = 'none';
 
-lgd = legend([n,q,s,u,w,y,z],'STZ','SAZ','PZ','AZ','SZ','Unchar','Nochar');
+lgd = legend([n,q,s,u,w,x1,y,z],'STZ','SAZ','PZ','AZ','SZ','SPR','Unchar','Nochar');
 lgd.FontSize = 14;
+
 title(["Front/zone characterisation for " + num2str(mth_min) + "/" + num2str(yr_min) + " to " + num2str(mth_max) + "/" + num2str(yr_max)]);
 
+saveas(gcf,['plot_ar_soarc_frontchar_',mth_min,'_',mth_max,'_',yr_min,'_',yr_max,'.png']);
 end
 %Option 2 
