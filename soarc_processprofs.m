@@ -4,11 +4,8 @@ function fronts_profiles = soarc_processprofs(profile_index)
 %
 % The function is called from soarc_master.m
 %
-%
-%
 % title - soarc_getprofs
 % vr - 1.0 author - rhijo/uob   date - 06/2019
-%
 %
 %% Process Argo float data from a list of profiles specified by argo_getdata.m 
 
@@ -28,30 +25,30 @@ PRES = [];
 TEMP = [];
 PSAL = [];
 
-    % Loop to read all prof files
-    for k = 1 : length(prof_index)
+% Loop to read all prof files
+for k = 1 : length(prof_index)
 
-        % Scan folders for file list, and display
-        file_list{k} = fullfile('dac',prof_index{k});
+    % Scan folders for file list, and display
+    file_list{k} = fullfile('dac',prof_index{k});
     
-        % Test files are Argo Netcdf
-               files_correct = false;
+    % Test files are Argo Netcdf
+           files_correct = false;
 
-                nc = (regexp(file_list,'.nc'));
+            nc = (regexp(file_list,'.nc'));
 
-                find(~cellfun('isempty', nc));
+            find(~cellfun('isempty', nc));
 
-        if (nc{k}>0)
-           files_correct = true;
-        end
+    if (nc{k}>0)
+       files_correct = true;
+    end
 
 
-            switch files_correct
-                case false
-                       % Do nothing
-                case true
+    switch files_correct
+        case false
+        % Do nothing
+        case true
 
-                % read netcdf files
+        % read netcdf files
                     ncid = netcdf.open(fullfile('dac',prof_index{k}),'NC_NOWRITE'); 
 
                 %Read latitude and longitude coordinates
@@ -126,15 +123,15 @@ isbadsqc = cellfun(@(x) any(x==1),isbadsqc,'UniformOutput',false);
 % Combine all returned bad qc flags (P,T,S) and remove flagged profiles
 allbadqc = cellfun(@(x,y,z) any(x==1 | y==1 | z==1),isbadpqc,isbadtqc,isbadsqc,'UniformOutput',false);
 for i = length(allbadqc):-1:1
+
+    prof_index(allbadqc{i}) = [];
+    LAT(allbadqc{i}) = [];
+    LON(allbadqc{i}) = [];
+    TIME(allbadqc{i}) = [];
+    PRES(allbadqc{i}) = [];
+    TEMP(allbadqc{i}) = [];
+    PSAL(allbadqc{i}) = [];
     
-        prof_index(allbadqc{i}) = [];
-        LAT(allbadqc{i}) = [];
-        LON(allbadqc{i}) = [];
-        TIME(allbadqc{i}) = [];
-        PRES(allbadqc{i}) = [];
-        TEMP(allbadqc{i}) = [];
-        PSAL(allbadqc{i}) = [];
-        
 end
 
 % match cell array dimensions to account for multiprofiles
@@ -144,9 +141,9 @@ for i = numel(LAT):-1:1
     time_dbl(1:numel(TIME{i}),i) = TIME{i};
 end
 
-    LAT = num2cell(lat_dbl);
-    LON = num2cell(lon_dbl);
-    TIME = num2cell(time_dbl);
+LAT = num2cell(lat_dbl);
+LON = num2cell(lon_dbl);
+TIME = num2cell(time_dbl);
 
 % Output profile data as structure
 fronts_profiles = struct('profid',{prof_index}','lat',{LAT},'lon',{LON},...
@@ -154,8 +151,3 @@ fronts_profiles = struct('profid',{prof_index}','lat',{LAT},'lon',{LON},...
 
 
 end
-
-
-
-
-
