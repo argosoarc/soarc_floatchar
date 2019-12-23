@@ -28,9 +28,9 @@ fclose(fid);
 %Search and remove profiles greater than -30 degrees latitude
 profID = P{1};
 dt = P{2};
-d = P{3};%(:,1);
+d = P{3};
 
-idx = any(d(:,2) > -30,2);
+idx = any(d(:,1) > -30,2);
 d(idx,:)=[];
 profID(idx,:)=[];
 dt(idx,:)= [];
