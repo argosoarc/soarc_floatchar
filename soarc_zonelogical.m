@@ -1,39 +1,42 @@
 function [fronts_logical] = soarc_zonelogical(fronts_profiles)
-%% soarc_fzlogical.m characterises the Southern Ocean fronts and zones and returns a logical array
-%% for those floats that satisfy a front/zone classification
-%
-% The function is called from soarc_master.m
-% Requires fronts_profiles structure to be in workspace before running
 %
 % title - soarc_zonelogical
 % vr - 1.0 author - rhijo/uob - date - 06/2019
 %
+% Description: characterises the Southern Ocean zones and returns a logical array
+% for those floats that satisfy a zone classification
+%
+% The function is called from soarc_master.m
+% Requires fronts_profiles structure to be in workspace before running
 %
 %% Set up criteria for Argo float characterisation of the ACC fronts and zones
 %  Delineates the following fronts:
-%  Subtropical front (STF)
 %  Sub-Antarctic zone (SAZ)
-%  Sub-Antarctic front (SAF)
 %  Polar Frontal Zone (PZ)
-%  Polar front (PF)
 %  Antarctic Zone (AZ)
-%  Southern Antarctic Circumpolar Current Front (SACCF)
 %  Southern Zone (SZ)
-%  Southern Boundary current (SBDY)
-%  Subpolar region?
-%  Antarctic slope front?
+%  Subpolar region (SPR)
 %  Unclassified - satisfies more than one characterisation criteria
 %  No class - satisifes no characterisation criteria
 %  Define based on T / S with P
 %
-%
+% variable naming:
+% zone_parameter(_upper/lowerbound)
+% p - pressure
+% t - temperature
+% s - salinity
+% ub - upper bound
+% lb - lower bound
+% e.g. stz_t_lb - subtropical zone _ temperature _ lower bound value
+
 %% User - Define front/zone characterisation 
 
+% Start code
 %% STZ
 % Orsi1995
-stz_p  = 105; % pressure
-stz_t_lb = 11.5; % temp
-stz_s_lb = 35.05;% salinity lower bound
+stz_p  = 105; 
+stz_t_lb = 11.5; 
+stz_s_lb = 35.05;
 
 %% SAZ characterisation
 % S < 34.55 at 100 dbar
@@ -77,7 +80,7 @@ szt_ub_pub = 510;
 
 %% Subpolar region
 % Tmin <= -1.24 C
-spr_tmin_max = -1.24;
+spr_t_lb = -1.24;
 
 %% Create logical structure for zones
 % initialise structure with profile list
@@ -95,6 +98,7 @@ isstz = cellfun(@(x) any(x) >= 1, fun_stz, 'un', 0);
     [fronts_logical(:).index_stz] = isstz;
 
 %% SAZ
+
 % Return logical arrays for profiles that satisfy P-T conditions
 fun_saz_s = cellfun(@(x,y) any(x < sazs_ub & y <= sazs_ub_pub) ,...
     fronts_profiles.psal, fronts_profiles.pres,'un',0);
@@ -111,6 +115,7 @@ issaz = cellfun(@(x) sum(x) >= 1, fun_saz, 'un', 0);
     [fronts_logical(:).index_saz] = issaz;
 
 %% PZ
+
 % Return logical arrays for profiles that satisfy P-T conditions
 fun_pz_ub = cellfun(@(x,y) any(x < pzt_ub & (y >= pzt_ub_plb & y <= pzt_ub_pub)),...
     fronts_profiles.temp, fronts_profiles.pres, 'un',0);
@@ -124,7 +129,7 @@ ispz = cellfun(@(x) sum(x) >= 1, fun_pz, 'un', 0);
 % create structure with array length matching prof index length
     [fronts_logical(:).index_pz] = ispz;
        
-%% AZ - Antarctic Zone
+%% AZ
 
 % Return logical array in which profiles satisfy P-T conditions
 fun_az_lb = cellfun(@(x,y) any(x > az_lb & (y >= az_lb_plb & y <= az_lb_pub)),...
@@ -141,7 +146,7 @@ isaz = cellfun(@(x) sum(x) >= 1, fun_az, 'un', 0);
     [fronts_logical(:).index_az] = isaz;
 
 
-%% SZ - Southern Zone
+%% SZ
 % Return logical array in which profiles satisfy P-T conditions
 fun_szt_lb = cellfun(@(x,y) any(min(x) >= szt_lb), fronts_profiles.temp,'un',0);
 fun_szt_ub = cellfun(@(x,y) any(x <= szt_ub & (y >= szt_ub_plb & y <= szt_ub_pub)),...
@@ -154,8 +159,8 @@ issz = cellfun(@(x) sum(x) >= 1, fun_sz, 'un', 0);
 % logical array in structure
     [fronts_logical(:).index_sz] = issz;
 
-%% SPR - Subpolar region
-fun_spr = cellfun(@(x) any(x < spr_tmin_max), fronts_profiles.temp, 'un', 0);
+%% SPR
+fun_spr = cellfun(@(x) any(x < spr_t_lb), fronts_profiles.temp, 'un', 0);
 isspr = cellfun(@(x) sum(x) == 1, fun_spr, 'un', 0);
 
 % logical array in structure
