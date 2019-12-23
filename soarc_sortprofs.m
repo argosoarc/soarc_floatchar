@@ -1,18 +1,15 @@
 function [fileout,driver] = soarc_sortprofs(EXPID)
-%
-% soarc_sortprofs filters all non-adjusted argo profiles at a latitude 
-% greater than 30 degrees south by user-defined latitude/longitude/time
-% 
-% The function is called from soarc_master.m
-%
-% Requires driver file (example provided with soarc_argo package)
-%
-%
 % 
 % title - soarc_sortprofs
 % vr - 1.0 author - rhijo/uob - date - 06/2019
 %
 %
+% soarc_sortprofs filters all non-adjusted argo profiles at a latitude 
+% greater than 30 degrees south by user-defined latitude/longitude/time
+%
+% Requires driver file (example provided with soarc_argo package)
+%
+%% Start code
 %% User - enter the parameter driver file
 driver = 'soarc_param_driver_userexample.txt';
 
