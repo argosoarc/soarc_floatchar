@@ -1,16 +1,12 @@
 function fronts_profiles = soarc_processprofs(profile_index)
-%% soarc_processprofs.m reads in all NetCDF profiles specified by the user index file
-% This script requires the user to have run soarc_sortprofs.m before running
-%
-% The function is called from soarc_master.m
-%
-%
-%
 % title - soarc_getprofs
 % vr - 1.0 author - rhijo/uob   date - 06/2019
 %
-%
 %% Process Argo float data from a list of profiles specified by argo_getdata.m 
+% Reads in all NetCDF profiles specified by user index file
+% To run script requires a .txt file of desired profiles from user. This can be created by running soarc_sortprofs.m
+%
+%% Start code
 
 % Read in the index file output from soarc_sortprofs.m
 f=fullfile(profile_index);
@@ -18,7 +14,7 @@ fid = fopen(f);
 fullfile_root = textscan(fid,'%s %*d %*f %*f', 'Delimiter',',');
 fclose(fid);
 
-prof_index = fullfile_root{1}; %Chosen a small selection for quick testing
+prof_index = fullfile_root{1}; 
 
 % Initialise arrays
 LAT = [];
@@ -54,7 +50,7 @@ PSAL = [];
                 % read netcdf files
                     ncid = netcdf.open(fullfile('dac',prof_index{k}),'NC_NOWRITE'); 
 
-                %Read latitude and longitude coordinates
+                % read latitude and longitude coordinates
                     varid = netcdf.inqVarID(ncid,'LATITUDE');
                     LAT{k} = netcdf.getVar(ncid,varid,'double');
 
@@ -76,18 +72,18 @@ PSAL = [];
                     varid = netcdf.inqVarID(ncid,'JULD');
                     JULD{k} = netcdf.getVar(ncid,varid,'double');
 
-                    %Calc absolute time
+                    % calculate absolute time
                     TIME{k} = datetime(RDT + JULD{k}, 'ConvertFrom','datenum','Format','yyyyMMddHHmmss');
 
-                    % Read in profile pressure measurements
+                    % read in profile pressure measurements
                     varid = netcdf.inqVarID(ncid,'PRES');
                     PRES{k} = netcdf.getVar(ncid,varid,'double');
 
-                    %Read in profile temperature measurements
+                    % read in profile temperature measurements
                     varid = netcdf.inqVarID(ncid,'TEMP');
                     TEMP{k} = netcdf.getVar(ncid,varid,'double'); 
 
-                    %Read in profile salinity measurements
+                    % read in profile salinity measurements
                     varid = netcdf.inqVarID(ncid,'PSAL');
                     PSAL{k} = netcdf.getVar(ncid,varid,'double');
 
@@ -123,6 +119,7 @@ PSAL = [];
 isbadpqc = cellfun(@(x) any(x==1),isbadpqc,'UniformOutput',false);
 isbadtqc = cellfun(@(x) any(x==1),isbadtqc,'UniformOutput',false);
 isbadsqc = cellfun(@(x) any(x==1),isbadsqc,'UniformOutput',false);
+
 % Combine all returned bad qc flags (P,T,S) and remove flagged profiles
 allbadqc = cellfun(@(x,y,z) any(x==1 | y==1 | z==1),isbadpqc,isbadtqc,isbadsqc,'UniformOutput',false);
 for i = length(allbadqc):-1:1
@@ -151,7 +148,6 @@ end
 % Output profile data as structure
 fronts_profiles = struct('profid',{prof_index}','lat',{LAT},'lon',{LON},...
     'time',{TIME},'pres',{PRES},'temp',{TEMP},'psal',{PSAL});
-
 
 end
 
