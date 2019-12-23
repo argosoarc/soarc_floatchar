@@ -1,16 +1,10 @@
 function [] = soarc_ar_outfile(fronts_char)
-%
-% 
+% title - soarc_fzchar
+% vr - 1.0  author - rhijo/uob   date - 06/2019
 %
 % The function is called from soarc_master.m
 % Create output index file for characterised float profiles from
 % soarc_master
-%
-%
-%
-% title - soarc_fzchar
-% vr - 1.0  author - rhijo/uob   date - 06/2019
-%
 % 
 %% Save characterised index file
 % write file to working directory dated today
@@ -27,7 +21,8 @@ format = 'Format: file/latitude/longitude/date(yyyyMMddHHmmss)/zone';
 % write file header
 fprintf(fid, '%s\n %s\n %s\n %s\n %s\n %s\n',str,dt,cdsrc,vno,auth,format);
 
-% write STZ to index file
+%% write zone structures to index file
+% STZ
 if isfield(fronts_char,'stz')
     for i = 1 : numel(fronts_char.stz)
         fronts_stz{i} = struct2cell(fronts_char.stz(i));
@@ -37,7 +32,7 @@ if isfield(fronts_char,'stz')
     end
 end
 
-% write SAZ to index file
+% SAZ
     if isfield(fronts_char,'saz')
         for i = 1 : numel(fronts_char.saz)
             fronts_saz{i} = struct2cell(fronts_char.saz(i));
@@ -47,7 +42,7 @@ end
         end
     end
     
-% write PZ to index file
+% PZ
 if isfield(fronts_char,'pz')
     for i = 1 : numel(fronts_char.pz)
         fronts_pz{i} = struct2cell(fronts_char.pz(i));        
@@ -57,8 +52,7 @@ if isfield(fronts_char,'pz')
     end
 end
 
-
-% write AZ to index file
+% AZ
 if isfield(fronts_char,'az')
     for i = 1 : numel(fronts_char.az)
         fronts_az{i} = struct2cell(fronts_char.az(i));        
@@ -68,7 +62,7 @@ if isfield(fronts_char,'az')
     end
 end
 
-% write SZ to index file
+% SZ
 if isfield(fronts_char,'sz')
     for i = 1 : numel(fronts_char.sz)
         fronts_sz{i} = struct2cell(fronts_char.sz(i));        
@@ -78,7 +72,7 @@ if isfield(fronts_char,'sz')
     end
 end
     
-% write SPR to index file
+% SPR
 if isfield(fronts_char,'spr')
     for i = 1 : numel(fronts_char.spr)
         fronts_spr{i} = struct2cell(fronts_char.spr(i));
@@ -88,7 +82,7 @@ if isfield(fronts_char,'spr')
     end
 end
 
-% write unchar to index file
+% Uncharacterised profiles
 if isfield(fronts_char,'unclass')
     for i = 1 : numel(fronts_char.unclass)
         fronts_unchar{i} = struct2cell(fronts_char.unclass(i));
@@ -98,7 +92,7 @@ if isfield(fronts_char,'unclass')
     end
 end
 
-% write no char to index file
+% Non-characterised profiles
 if isfield(fronts_char,'noclass')
     for i = 1 : numel(fronts_char.noclass)
         fronts_nochar{i} = struct2cell(fronts_char.noclass(i));
