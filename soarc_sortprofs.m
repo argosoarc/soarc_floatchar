@@ -1,6 +1,6 @@
 function [fileout,driver] = soarc_sortprofs(EXPID)
 %
-% soarc_sortprofs filters all *real-time* argo profiles at a latitude 
+% soarc_sortprofs filters all non-adjusted argo profiles at a latitude 
 % greater than 30 degrees south by user-defined latitude/longitude/time
 % 
 % The function is called from soarc_master.m
@@ -17,13 +17,11 @@ function [fileout,driver] = soarc_sortprofs(EXPID)
 driver = 'soarc_param_driver_userexample.txt';
 
 %% Filter index file for floats greater than 30 degrees South
-
-dum_expID = EXPID;
-
 % read in index file ar_index_global_prof.txt
 fid=fopen('ar_index_global_prof.txt');
 [P]=textscan(fid,'%s %{yyyyMMddHHmmss}D %f %f %*s %*f %*s %*f','HeaderLines',9,'Delimiter',',','CollectOutput',true);
 fclose(fid);
+
 %% Read in argo profile index file and sort for desired profiles
 %Search and remove profiles greater than -30 degrees latitude
 profID = P{1};
@@ -52,9 +50,6 @@ prof_dln = [profID dt_cell dln_cell];
 so_filename = ['ar_index_soarc_',datestr(now,'ddmmyy'),'.txt'];
 fileID = fopen(so_filename,'w');
  
-formatSpec = '%s, %{yyyyMMddHHmmss}D, %f, %f \n';
- 
-[nrows, ncols ] = size(prof_dln);
 for i = 1 : length(prof_dln)
 fprintf(fileID, '%s, %s, %f, %f \n', prof_dln{i,:});
 end
