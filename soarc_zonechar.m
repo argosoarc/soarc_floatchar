@@ -1,20 +1,16 @@
 function [fronts_char] = soarc_zonechar(fronts_logical,fronts_profiles)
-%
-% 
-%
 % The function is called from soarc_master.m
-% this function takes the structural arrays fronts_logical and
-% fronts_profiles and characterises profile data into zones
-%
-%
 % title - soarc_zonechar
 % vr - 1.0  author - rhijo/uob   date - 06/2019
 %
-%% characterise the STZ
+% this function takes the structural arrays fronts_logical and
+% fronts_profiles and characterises profile data into zones
+
+%% characterise zones
+% STZ
 index_unclass = fronts_logical.index_unclass;
 index_stz = fronts_logical.index_stz;
 
-% fronts_logical = fronts_logical.proflist);
 for i = 1 : length(fronts_logical.proflist)
     if (index_stz{i} == 1 && index_unclass{i} ~= 1)
             stz_prof{i} = fronts_logical.proflist{i};
@@ -39,9 +35,8 @@ for i = 1 : length(fronts_logical.proflist)
     end
 end
 
-
          
-%% characterise the SAZ
+% SAZ
 index_saz = fronts_logical.index_saz;
 for i = 1 : length(fronts_logical.proflist)
     if (index_saz{i} == 1 && index_unclass{i} ~= 1)
@@ -65,8 +60,10 @@ for i = 1 : length(fronts_logical.proflist)
             'time',saz_time,'pres',saz_pres,'psal',saz_psal,'temp',saz_temp);
          
     end
-end                   
-%% characterise the PZ
+end   
+
+
+% PZ
 index_pz = fronts_logical.index_pz;
 for i = 1 : length(fronts_logical.proflist)
     if (index_pz{i} == 1 && index_unclass{i} ~= 1)
@@ -91,7 +88,9 @@ for i = 1 : length(fronts_logical.proflist)
 
     end
 end
-%% characterise the AZ
+
+
+% AZ
 index_az = fronts_logical.index_az;
 for i = 1 : length(fronts_logical.proflist)
     if (index_az{i} == 1 && index_unclass{i} ~= 1)
@@ -116,7 +115,9 @@ for i = 1 : length(fronts_logical.proflist)
         
     end     
 end 
-%% characterise the SZ
+
+
+% SZ
 index_sz = fronts_logical.index_sz;
 for i = 1 : length(fronts_logical.proflist)
     if (index_sz{i} == 1 && index_unclass{i} ~= 1)
@@ -141,7 +142,8 @@ for i = 1 : length(fronts_logical.proflist)
     end
 end
 
-%% characterise the SPR
+
+% SPR
 index_spr = fronts_logical.index_spr;
 for i = 1 : length(fronts_logical.proflist)
     if (index_spr{i} == 1 && index_unclass{i} ~= 1)
@@ -166,6 +168,8 @@ for i = 1 : length(fronts_logical.proflist)
 
    end
 end
+
+
 %% characterise the profiles that fit into more than one front/zone
 for i = 1 : length(fronts_logical.proflist)
     if index_unclass{i} == 1
@@ -222,6 +226,3 @@ end
 
 end
  
-
-
-
