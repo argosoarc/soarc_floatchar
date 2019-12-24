@@ -1,14 +1,6 @@
 function[] = soarc_plotzones(fronts_char)
-%
-%
-% The function is called from soarc_master.m
-%
-%
 % title - soarc_plotfronts vr - 1.0 author - rhijo/uob - date - 06/2019
-%
-% V1.0
-%e.g.
-%m_proj('equid','lon',[min(X) max(X)]+[-1 1],'lat',[min(Y) max(Y)]+[-1 1]/2);
+% The function is called from soarc_master.m
 
 %% Plot profiles
 % read in driver file for lat / lon / time limits
@@ -36,11 +28,12 @@ mth_max = val(8);
 figure('units','normalized','outerposition',[0 0 1 1]);
 
 %set projection (using m_map toolbox)
-
-% Lamber Conformal Conic - good for longitude sections
+% Option 1 plotting - longitudinal sections
+% Lamber Conformal Conic
 m_proj('Albers Equal-Area Conic','long',[-180 0],'lat',[lat_min lat_max]);
 
-% Polar-centric Stereographic - good for full longitudinal range
+% Option 2 plotting - full longitudinal range
+% Polar-centric Stereographic
 %m_proj('Stereographic','lat',-90,'long',0,'radius',65);
 
 % set colour-blind friendly colormap
