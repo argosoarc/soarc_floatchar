@@ -20,7 +20,7 @@ fid=fopen('ar_index_global_prof.txt');
 fclose(fid);
 
 %% Read in argo profile index file and sort for desired profiles
-%Search and remove profiles greater than -30 degrees latitude
+% Search and remove profiles greater than -30 degrees latitude
 profID = P{1};
 dt = P{2};
 d = P{3};
@@ -30,20 +30,24 @@ d(idx,:)=[];
 profID(idx,:)=[];
 dt(idx,:)= [];
 
-%Search and remove any NaN from lat/lon column
-profID(any(isnan(d),2),:) = [];
-dt(any(isnan(d),2),:) = [];
-d(any(isnan(d),2),:) = [];
-profID(any(isnat(dt)),:) = [];
-d(any(isnat(dt)),:) = [];
-dt(any(isnat(dt)),:) = [];
+% Search and remove any NaN from lat/lon column
+idx_isnan = any(isnan(d),2);
+d(idx_isnan,:)=[];
+profID(idx_isnan,:)=[];
+dt(idx_isnan,:)= [];
 
-%Return cell array for all columns to write file
+% Search and remove any NaT from time column
+idx_isnat = isnat(dt);
+d(idx_isnat,:)=[];
+profID(idx_isnat,:)=[];
+dt(idx_isnat,:)= [];
+
+% Return cell array for all columns to write file
 dln_cell = num2cell(d);
 dt_cell = cellstr(char(dt));
 prof_dln = [profID dt_cell dln_cell];
 
-%Write new index file - all profile indexes for Southern Ocean floats
+% Write new index file - all profile indexes for Southern Ocean floats
 so_filename = ['ar_index_soarc_',datestr(now,'ddmmyy'),'.txt'];
 fileID = fopen(so_filename,'w');
  
